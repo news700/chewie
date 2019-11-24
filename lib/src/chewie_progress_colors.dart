@@ -10,7 +10,6 @@ class ChewieProgressColors {
         bufferedPaint = Paint()..color = bufferedColor,
         handlePaint = Paint()..color = handleColor,
         backgroundPaint = Paint()..color = backgroundColor;
-
   final Paint playedPaint;
   final Paint bufferedPaint;
   final Paint handlePaint;
