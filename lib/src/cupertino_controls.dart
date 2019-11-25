@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:chewie/src/chewie_player.dart';
 import 'package:chewie/src/chewie_progress_colors.dart';
 import 'package:chewie/src/cupertino_progress_bar.dart';
 import 'package:chewie/src/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:open_iconic_flutter/open_iconic_flutter.dart';
@@ -74,7 +74,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
             children: <Widget>[
               // _buildTopBar(backgroundColor, iconColor, barHeight, buttonPadding),
               _buildHitArea(),
-              // _buildBottomBar(backgroundColor, iconColor, barHeight),
+              _buildBottomBar(backgroundColor, iconColor, barHeight),
             ],
           ),
         ),
@@ -116,65 +116,107 @@ class _CupertinoControlsState extends State<CupertinoControls> {
       // opacity: _hideStuff ? 0.0 : 1.0,
       opacity: 1.0,
       duration: Duration(milliseconds: 300),
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left: 5.0),
-            color: Colors.transparent,
-            alignment: Alignment.bottomLeft,
-            margin: EdgeInsets.only(left: marginSize, right: marginSize, bottom: 1, top: marginSize),
-            child: _buildMute(controller, backgroundColor, iconColor, barHeight),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 43.3, right: 10),
-            color: Colors.transparent,
-            alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.all(marginSize),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30.0),
-              child: BackdropFilter(
-                filter: ui.ImageFilter.blur(
-                  sigmaX: 10.0,
-                  sigmaY: 10.0,
-                ),
-                child: Container(
-                  height: barHeight,
-                  color: backgroundColor,
-                  child: chewieController.isLive
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            _buildPlayPause(controller, iconColor, barHeight),
-                            _buildLive(iconColor),
-                          ],
-                        )
-                      : Row(
-                          children: <Widget>[
-                            // _buildSkipBack(iconColor, barHeight),
-                            SizedBox(
-                              width: 10.3,
-                            ),
-                            _buildPlayPause(controller, iconColor, barHeight),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            // _buildSkipForward(iconColor, barHeight),
-                            _buildPosition(iconColor),
-                            SizedBox(
-                              width: 6.6,
-                            ),
-                            _buildProgressBar(),
-                            SizedBox(
-                              width: 6.6,
-                            ),
-                            _buildRemaining(iconColor)
-                          ],
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          _cancelAndRestartTimer();
+          if (_latestValue.volume == 0) {
+            controller.setVolume(_latestVolume ?? 0.5);
+          } else {
+            _latestVolume = controller.value.volume;
+            controller.setVolume(0.0);
+          }
+        },
+        child: Stack(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 5.0, bottom: 5.0),
+              color: Colors.transparent,
+              alignment: Alignment.bottomLeft,
+              margin: EdgeInsets.only(left: marginSize, right: marginSize, bottom: 1, top: marginSize),
+              child: _buildMute(controller, backgroundColor, iconColor, barHeight),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 43.3, right: 10),
+              color: Colors.transparent,
+              alignment: Alignment.bottomCenter,
+              margin: EdgeInsets.all(marginSize),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30.0),
+                child: BackdropFilter(
+                  filter: ui.ImageFilter.blur(
+                    sigmaX: 10.0,
+                    sigmaY: 10.0,
+                  ),
+                  child: Container(
+                    height: barHeight,
+                    color: backgroundColor,
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 10.3,
                         ),
+                        _buildPlayPause(controller, iconColor, barHeight),
+                        _buildPosition(iconColor),
+                        _buildProgressBar(),
+                        _buildRemaining(iconColor)
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            //          Container(
+            //            padding: EdgeInsets.only(left: 43.3, right: 10),
+            //            color: Colors.transparent,
+            //            alignment: Alignment.bottomCenter,
+            //            margin: EdgeInsets.all(marginSize),
+            //            child: ClipRRect(
+            //              borderRadius: BorderRadius.circular(30.0),
+            //              child: BackdropFilter(
+            //                filter: ui.ImageFilter.blur(
+            //                  sigmaX: 10.0,
+            //                  sigmaY: 10.0,
+            //                ),
+            //                child: Container(
+            //                  height: barHeight,
+            //                  color: backgroundColor,
+            //                  child: chewieController.isLive
+            //                      ? Row(
+            //                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //                          children: <Widget>[
+            //                            _buildPlayPause(controller, iconColor, barHeight),
+            //                            _buildLive(iconColor),
+            //                          ],
+            //                        )
+            //                      : Row(
+            //                          children: <Widget>[
+            //                            // _buildSkipBack(iconColor, barHeight),
+            //                            SizedBox(
+            //                              width: 10.3,
+            //                            ),
+            //                            _buildPlayPause(controller, iconColor, barHeight),
+            //                            SizedBox(
+            //                              width: 10,
+            //                            ),
+            //                            // _buildSkipForward(iconColor, barHeight),
+            //                            _buildPosition(iconColor),
+            //                            SizedBox(
+            //                              width: 6.6,
+            //                            ),
+            //                            _buildProgressBar(),
+            //                            SizedBox(
+            //                              width: 6.6,
+            //                            ),
+            //                            _buildRemaining(iconColor)
+            //                          ],
+            //                        ),
+            //                ),
+            //              ),
+            //            ),
+            //          ),
+          ],
+        ),
       ),
     );
   }
@@ -250,6 +292,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
     double barHeight,
   ) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () {
         _cancelAndRestartTimer();
         if (_latestValue.volume == 0) {
@@ -332,54 +375,6 @@ class _CupertinoControlsState extends State<CupertinoControls> {
     );
   }
 
-  GestureDetector _buildSkipBack(Color iconColor, double barHeight) {
-    return GestureDetector(
-      onTap: _skipBack,
-      child: Container(
-        height: barHeight,
-        color: Colors.transparent,
-        margin: EdgeInsets.only(left: 10.0),
-        padding: EdgeInsets.only(
-          left: 6.0,
-          right: 6.0,
-        ),
-        child: Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.skewY(0.0)
-            ..rotateX(math.pi)
-            ..rotateZ(math.pi),
-          child: Icon(
-            OpenIconicIcons.reload,
-            color: iconColor,
-            size: 12.0,
-          ),
-        ),
-      ),
-    );
-  }
-
-  GestureDetector _buildSkipForward(Color iconColor, double barHeight) {
-    return GestureDetector(
-      onTap: _skipForward,
-      child: Container(
-        height: barHeight,
-        color: Colors.transparent,
-        padding: EdgeInsets.only(
-          left: 6.0,
-          right: 8.0,
-        ),
-        margin: EdgeInsets.only(
-          right: 8.0,
-        ),
-        child: Icon(
-          OpenIconicIcons.reload,
-          color: iconColor,
-          size: 12.0,
-        ),
-      ),
-    );
-  }
-
   Widget _buildTopBar(
     Color backgroundColor,
     Color iconColor,
@@ -395,9 +390,8 @@ class _CupertinoControlsState extends State<CupertinoControls> {
       ),
       child: Row(
         children: <Widget>[
-          // chewieController.allowFullScreen ? _buildExpandButton(backgroundColor, iconColor, barHeight, buttonPadding) : Container(),
           Expanded(child: Container()),
-          chewieController.allowMuting ? _buildMute(controller, backgroundColor, iconColor, barHeight) : Container(),
+          _buildMute(controller, backgroundColor, iconColor, barHeight),
         ],
       ),
     );
@@ -439,44 +433,46 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   }
 
   Widget _buildProgressBar() {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(right: 12.0),
-        child: CupertinoVideoProgressBar(
-          controller,
-          onDragStart: () {
-            _hideTimer?.cancel();
-          },
-          onDragEnd: () {
-            _startHideTimer();
-          },
-          colors: chewieController.cupertinoProgressColors ??
-              ChewieProgressColors(
-                playedColor: Color.fromARGB(
-                  120,
-                  255,
-                  255,
-                  255,
+    return Container(
+      child: Expanded(
+        child: Padding(
+          padding: EdgeInsets.only(right: 12.0),
+          child: CupertinoVideoProgressBar(
+            controller,
+            onDragStart: () {
+              _hideTimer?.cancel();
+            },
+            onDragEnd: () {
+              _startHideTimer();
+            },
+            colors: chewieController.cupertinoProgressColors ??
+                ChewieProgressColors(
+                  playedColor: Color.fromARGB(
+                    120,
+                    255,
+                    255,
+                    255,
+                  ),
+                  handleColor: Color.fromARGB(
+                    255,
+                    255,
+                    255,
+                    255,
+                  ),
+                  bufferedColor: Color.fromARGB(
+                    60,
+                    255,
+                    255,
+                    255,
+                  ),
+                  backgroundColor: Color.fromARGB(
+                    20,
+                    255,
+                    255,
+                    255,
+                  ),
                 ),
-                handleColor: Color.fromARGB(
-                  255,
-                  255,
-                  255,
-                  255,
-                ),
-                bufferedColor: Color.fromARGB(
-                  60,
-                  255,
-                  255,
-                  255,
-                ),
-                backgroundColor: Color.fromARGB(
-                  20,
-                  255,
-                  255,
-                  255,
-                ),
-              ),
+          ),
         ),
       ),
     );
@@ -503,20 +499,6 @@ class _CupertinoControlsState extends State<CupertinoControls> {
         }
       }
     });
-  }
-
-  void _skipBack() {
-    _cancelAndRestartTimer();
-    final beginning = Duration(seconds: 0).inMilliseconds;
-    final skip = (_latestValue.position - Duration(seconds: 15)).inMilliseconds;
-    controller.seekTo(Duration(milliseconds: math.max(skip, beginning)));
-  }
-
-  void _skipForward() {
-    _cancelAndRestartTimer();
-    final end = _latestValue.duration.inMilliseconds;
-    final skip = (_latestValue.position + Duration(seconds: 15)).inMilliseconds;
-    controller.seekTo(Duration(milliseconds: math.min(skip, end)));
   }
 
   void _startHideTimer() {
