@@ -39,27 +39,12 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   @override
   Widget build(BuildContext context) {
     chewieController = ChewieController.of(context);
-    if (_latestValue.hasError) {
-      return chewieController.errorBuilder != null
-          ? chewieController.errorBuilder(
-              context,
-              chewieController.videoPlayerController.value.errorDescription,
-            )
-          : Center(
-              child: Icon(
-                OpenIconicIcons.ban,
-                color: Colors.white,
-                size: 42,
-              ),
-            );
-    }
     final backgroundColor = widget.backgroundColor;
     final iconColor = widget.iconColor;
     chewieController = ChewieController.of(context);
     controller = chewieController.videoPlayerController;
     final orientation = MediaQuery.of(context).orientation;
     final barHeight = orientation == Orientation.portrait ? 30.0 : 47.0;
-    final buttonPadding = orientation == Orientation.portrait ? 16.0 : 24.0;
     return MouseRegion(
       onHover: (_) {
         _cancelAndRestartTimer();
@@ -72,7 +57,6 @@ class _CupertinoControlsState extends State<CupertinoControls> {
           absorbing: _hideStuff,
           child: Column(
             children: <Widget>[
-              // _buildTopBar(backgroundColor, iconColor, barHeight, buttonPadding),
               _buildHitArea(),
               _buildBottomBar(backgroundColor, iconColor, barHeight),
             ],
@@ -113,8 +97,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
     double barHeight,
   ) {
     return AnimatedOpacity(
-      // opacity: _hideStuff ? 0.0 : 1.0,
-      opacity: 1.0,
+      opacity: _hideStuff ? 0.0 : 1.0,
       duration: Duration(milliseconds: 300),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -166,102 +149,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
                 ),
               ),
             ),
-            //          Container(
-            //            padding: EdgeInsets.only(left: 43.3, right: 10),
-            //            color: Colors.transparent,
-            //            alignment: Alignment.bottomCenter,
-            //            margin: EdgeInsets.all(marginSize),
-            //            child: ClipRRect(
-            //              borderRadius: BorderRadius.circular(30.0),
-            //              child: BackdropFilter(
-            //                filter: ui.ImageFilter.blur(
-            //                  sigmaX: 10.0,
-            //                  sigmaY: 10.0,
-            //                ),
-            //                child: Container(
-            //                  height: barHeight,
-            //                  color: backgroundColor,
-            //                  child: chewieController.isLive
-            //                      ? Row(
-            //                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                          children: <Widget>[
-            //                            _buildPlayPause(controller, iconColor, barHeight),
-            //                            _buildLive(iconColor),
-            //                          ],
-            //                        )
-            //                      : Row(
-            //                          children: <Widget>[
-            //                            // _buildSkipBack(iconColor, barHeight),
-            //                            SizedBox(
-            //                              width: 10.3,
-            //                            ),
-            //                            _buildPlayPause(controller, iconColor, barHeight),
-            //                            SizedBox(
-            //                              width: 10,
-            //                            ),
-            //                            // _buildSkipForward(iconColor, barHeight),
-            //                            _buildPosition(iconColor),
-            //                            SizedBox(
-            //                              width: 6.6,
-            //                            ),
-            //                            _buildProgressBar(),
-            //                            SizedBox(
-            //                              width: 6.6,
-            //                            ),
-            //                            _buildRemaining(iconColor)
-            //                          ],
-            //                        ),
-            //                ),
-            //              ),
-            //            ),
-            //          ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLive(Color iconColor) {
-    return Padding(
-      padding: EdgeInsets.only(right: 12.0),
-      child: Text(
-        'LIVE',
-        style: TextStyle(color: iconColor, fontSize: 12.0),
-      ),
-    );
-  }
-
-  GestureDetector _buildExpandButton(
-    Color backgroundColor,
-    Color iconColor,
-    double barHeight,
-    double buttonPadding,
-  ) {
-    return GestureDetector(
-      onTap: _onExpandCollapse,
-      child: AnimatedOpacity(
-        opacity: _hideStuff ? 0.0 : 1.0,
-        duration: Duration(milliseconds: 300),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 10.0),
-            child: Container(
-              height: barHeight,
-              padding: EdgeInsets.only(
-                left: buttonPadding,
-                right: buttonPadding,
-              ),
-              color: backgroundColor,
-              child: Center(
-                child: Icon(
-                  chewieController.isFullScreen ? OpenIconicIcons.fullscreenExit : OpenIconicIcons.fullscreenEnter,
-                  color: iconColor,
-                  size: 12.0,
-                ),
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -364,35 +252,12 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   }
 
   Widget _buildRemaining(Color iconColor) {
-    // final position = _latestValue != null && _latestValue.duration != null ? _latestValue.duration - _latestValue.position : Duration(seconds: 0);
     final position = _latestValue != null && _latestValue.duration != null ? _latestValue.duration : Duration(seconds: 0);
     return Padding(
       padding: EdgeInsets.only(right: 12.0),
       child: Text(
         '${formatDuration(position)}',
         style: TextStyle(color: iconColor, fontSize: 12.0),
-      ),
-    );
-  }
-
-  Widget _buildTopBar(
-    Color backgroundColor,
-    Color iconColor,
-    double barHeight,
-    double buttonPadding,
-  ) {
-    return Container(
-      height: barHeight,
-      margin: EdgeInsets.only(
-        top: marginSize,
-        right: marginSize,
-        left: marginSize,
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(child: Container()),
-          _buildMute(controller, backgroundColor, iconColor, barHeight),
-        ],
       ),
     );
   }
@@ -418,18 +283,6 @@ class _CupertinoControlsState extends State<CupertinoControls> {
         });
       });
     }
-  }
-
-  void _onExpandCollapse() {
-    setState(() {
-      _hideStuff = true;
-      chewieController.toggleFullScreen();
-      _expandCollapseTimer = Timer(Duration(milliseconds: 300), () {
-        setState(() {
-          _cancelAndRestartTimer();
-        });
-      });
-    });
   }
 
   Widget _buildProgressBar() {
