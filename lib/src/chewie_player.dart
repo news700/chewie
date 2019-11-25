@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:chewie/src/chewie_progress_colors.dart';
 import 'package:chewie/src/player_with_controls.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +99,6 @@ class ChewieState extends State<Chewie> {
       controller: widget.controller,
       child: PlayerWithControls(),
     );
-
     if (widget.controller.routePageBuilder == null) {
       return _defaultRoutePageBuilder(context, animation, secondaryAnimation, controllerProvider);
     }
@@ -115,7 +113,6 @@ class ChewieState extends State<Chewie> {
       settings: RouteSettings(isInitialRoute: false),
       pageBuilder: _fullScreenRoutePageBuilder,
     );
-
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (isAndroid) {
       SystemChrome.setPreferredOrientations([
@@ -123,19 +120,15 @@ class ChewieState extends State<Chewie> {
         DeviceOrientation.landscapeRight,
       ]);
     }
-
     if (!widget.controller.allowedScreenSleep) {
       Wakelock.enable();
     }
-
     await Navigator.of(context, rootNavigator: true).push(route);
     _isFullScreen = false;
     widget.controller.exitFullScreen();
-
     // The wakelock plugins checks whether it needs to perform an action internally,
     // so we do not need to check Wakelock.isEnabled.
     Wakelock.disable();
-
     SystemChrome.setEnabledSystemUIOverlays(widget.controller.systemOverlaysAfterFullScreen);
     SystemChrome.setPreferredOrientations(widget.controller.deviceOrientationsAfterFullScreen);
   }
@@ -171,7 +164,7 @@ class ChewieController extends ChangeNotifier {
     this.allowedScreenSleep = true,
     this.isLive = false,
     this.allowFullScreen = false,
-    this.allowMuting = false,
+    this.allowMuting = true,
     this.systemOverlaysAfterFullScreen = SystemUiOverlay.values,
     this.deviceOrientationsAfterFullScreen = const [
       DeviceOrientation.portraitUp,
@@ -260,7 +253,6 @@ class ChewieController extends ChangeNotifier {
 
   static ChewieController of(BuildContext context) {
     final chewieControllerProvider = context.inheritFromWidgetOfExactType(_ChewieControllerProvider) as _ChewieControllerProvider;
-
     return chewieControllerProvider.controller;
   }
 
@@ -270,23 +262,18 @@ class ChewieController extends ChangeNotifier {
 
   Future _initialize() async {
     await videoPlayerController.setLooping(looping);
-
     if ((autoInitialize || autoPlay) && !videoPlayerController.value.initialized) {
       await videoPlayerController.initialize();
     }
-
     if (autoPlay) {
       if (fullScreenByDefault) {
         enterFullScreen();
       }
-
       await videoPlayerController.play();
     }
-
     if (startAt != null) {
       await videoPlayerController.seekTo(startAt);
     }
-
     if (fullScreenByDefault) {
       videoPlayerController.addListener(_fullScreenListener);
     }
@@ -343,7 +330,6 @@ class _ChewieControllerProvider extends InheritedWidget {
   })  : assert(controller != null),
         assert(child != null),
         super(key: key, child: child);
-
   final ChewieController controller;
 
   @override
