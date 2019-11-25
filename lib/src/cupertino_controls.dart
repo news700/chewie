@@ -276,13 +276,13 @@ class _CupertinoControlsState extends State<CupertinoControls> {
     if ((controller.value != null && controller.value.isPlaying) || chewieController.autoPlay) {
       _startHideTimer();
     }
-    if (chewieController.showControlsOnInitialize) {
-      _initTimer = Timer(Duration(milliseconds: 200), () {
-        setState(() {
-          _hideStuff = false;
-        });
-      });
-    }
+//    if (chewieController.showControlsOnInitialize) {
+//      _initTimer = Timer(Duration(milliseconds: 200), () {
+//        setState(() {
+//          _hideStuff = false;
+//        });
+//      });
+//    }
   }
 
   Widget _buildProgressBar() {
