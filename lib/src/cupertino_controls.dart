@@ -3,11 +3,11 @@ import 'dart:ui' as ui;
 import 'package:chewie/src/chewie_player.dart';
 import 'package:chewie/src/chewie_progress_colors.dart';
 import 'package:chewie/src/cupertino_progress_bar.dart';
+import 'package:chewie/src/chewie_icons.dart';
 import 'package:chewie/src/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:open_iconic_flutter/open_iconic_flutter.dart';
 import 'package:video_player/video_player.dart';
 
 class CupertinoControls extends StatefulWidget {
@@ -203,7 +203,8 @@ class _CupertinoControlsState extends State<CupertinoControls> {
                 right: 8.0,
               ),
               child: Icon(
-                (_latestValue != null && _latestValue.volume > 0) ? Icons.volume_up : Icons.volume_off,
+                //(_latestValue != null && _latestValue.volume > 0) ? Icons.volume_up : Icons.volume_off,
+                (_latestValue != null && _latestValue.volume > 0) ? ChewieIcons.volumeOn : ChewieIcons.volumeOff,
                 color: iconColor,
                 size: 16.0,
               ),
@@ -225,11 +226,11 @@ class _CupertinoControlsState extends State<CupertinoControls> {
         height: barHeight,
         color: Colors.transparent,
         padding: EdgeInsets.only(
-          left: 6.0,
+          left: 3.0,
           right: 6.0,
         ),
         child: Icon(
-          controller.value.isPlaying ? OpenIconicIcons.mediaPause : OpenIconicIcons.mediaPlay,
+          controller.value.isPlaying ? ChewieIcons.iconPause : ChewieIcons.iconPlay,
           color: iconColor,
           size: 16.0,
         ),
@@ -276,13 +277,13 @@ class _CupertinoControlsState extends State<CupertinoControls> {
     if ((controller.value != null && controller.value.isPlaying) || chewieController.autoPlay) {
       _startHideTimer();
     }
-//    if (chewieController.showControlsOnInitialize) {
-//      _initTimer = Timer(Duration(milliseconds: 200), () {
-//        setState(() {
-//          _hideStuff = false;
-//        });
-//      });
-//    }
+    //if (chewieController.showControlsOnInitialize) {
+    //  _initTimer = Timer(Duration(milliseconds: 200), () {
+    //    setState(() {
+    //      _hideStuff = false;
+    //    });
+    //  });
+    //}
   }
 
   Widget _buildProgressBar() {
