@@ -40,7 +40,8 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   Widget build(BuildContext context) {
     chewieController = ChewieController.of(context);
     final backgroundColor = widget.backgroundColor;
-    final iconColor = widget.iconColor;
+    //final iconColor = widget.iconColor;
+    final iconColor = Colors.white;
     chewieController = ChewieController.of(context);
     controller = chewieController.videoPlayerController;
     final orientation = MediaQuery.of(context).orientation;
@@ -203,7 +204,6 @@ class _CupertinoControlsState extends State<CupertinoControls> {
                 right: 8.0,
               ),
               child: Icon(
-                //(_latestValue != null && _latestValue.volume > 0) ? Icons.volume_up : Icons.volume_off,
                 (_latestValue != null && _latestValue.volume > 0) ? ChewieIcons.volumeOn : ChewieIcons.volumeOff,
                 color: iconColor,
                 size: 16.0,
@@ -302,7 +302,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
             colors: chewieController.cupertinoProgressColors ??
                 ChewieProgressColors(
                   playedColor: Color.fromARGB(
-                    120,
+                    255,
                     255,
                     255,
                     255,
